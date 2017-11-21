@@ -1,0 +1,202 @@
+extends mypage
+block menu
+    div(class = 'mypage-div container-fluid')
+        div(class='left col-sm-6 center-block')
+            div(class='header') 지금까지 들은 전공수업
+            div(id='majorProgressChart' class='center-block' style='text-align:center;')
+                script.
+                    // 자신이 수강한 전공 / 전체 전공으로 비율 정함
+                    var entireLength = '#{entireList}'.split(',').length;
+                    var percent = countMajor('#{major}'.split(','))/entireLength*100;
+
+                    function countMajor(ary){
+                        var count=0;
+
+                        for(var i=0; i<ary.length; i++){
+                            if(ary[i] == 'O') count+=1;
+                        }
+
+                        return count;
+                    };
+
+                    var w = 300 , h = 300;
+
+                    var createGradient = function (svg, id, color1, color2) {
+
+                        var defs = svg.append("svg:defs");
+
+                        var red_gradient = defs.append("svg:linearGradient")
+                            .attr("id", id)
+                            .attr("x1", "0%")
+                            .attr("y1", "0%")
+                            .attr("x2", "50%")
+                            .attr("y2", "100%")
+                            .attr("spreadMethod", "pad");
+
+                        red_gradient.append("svg:stop")
+                            .attr("offset", "50%")
+                            .attr("stop-color", color1)
+                            .attr("stop-opacity", 1);
+
+                        red_gradient.append("svg:stop")
+                            .attr("offset", "100%")
+                            .attr("stop-color", color2)
+                            .attr("stop-opacity", 1);
+                    };
+
+                    var ratio = percent / 100;
+
+                    var pie = d3.layout.pie()
+                        .value(function (d) {
+                            return d
+                        })
+                        .sort(null);
+
+                    var outerRadius = (w / 2) - 10;
+                    var innerRadius = 110;
+
+                    var color = ['#f2503f', '#ea0859', '#404F70'];
+
+                    var svg = d3.select("#majorProgressChart")
+                        .append("svg")
+                        .attr({
+                            class: 'shadow'
+                        }).append('g')
+                    $('svg').css({
+                        "width": w,
+                        "height": h
+                    })
+                    $('g').css({
+                        "transform":"translate("+w/2+"px,"+h/2+"px"+")",
+                        "width": w,
+                        "height": h
+                    });
+
+                    createGradient(svg, 'gradient', color[0], color[1]);
+
+                    var arc = d3.svg.arc()
+                        .innerRadius(innerRadius)
+                        .outerRadius(outerRadius)
+                        .startAngle(0)
+                        .endAngle(2 * Math.PI);
+
+                    var arcLine = d3.svg.arc()
+                        .innerRadius(innerRadius)
+                        .outerRadius(outerRadius)
+                        .startAngle(0);
+
+
+                    var pathBackground = svg.append('path')
+
+                        .attr({
+                            d: arc
+                        })
+                        .style({
+                            fill: color[2]
+                        });
+
+
+                    var pathChart = svg.append('path')
+                        .datum({endAngle: 0})
+                        .attr({
+                            d: arcLine
+                        })
+                        .style({
+                            fill: 'url(#gradient)'
+                        });
+
+                    var middleCount = svg.append('text')
+                        .text(function (d) {
+                            return d;
+                        })
+
+                        .attr({
+                            class: 'middleText',
+                            'text-anchor': 'middle',
+                            dy: 30,
+                            dx: -15
+                        })
+                        .style({
+                            fill: color[1],
+                            'font-size': '90px'
+
+                        });
+                    svg.append('text')
+                        .text('%')
+                        .attr({
+                            class: 'percent',
+                            'text-anchor': 'middle',
+                            dx: 50,
+                            dy: -5
+
+                        })
+                        .style({
+                            fill: color[1],
+                            'font-size': '40px'
+
+                        });
+
+
+                    var arcTween = function (transition, newAngle) {
+                        transition.attrTween("d", function (d) {
+                            var interpolate = d3.interpolate(d.endAngle, newAngle);
+                            var interpolateCount = d3.interpolate(0, percent);
+                            return function (t) {
+                                d.endAngle = interpolate(t);
+                                middleCount.text(Math.floor(interpolateCount(t)));
+                                return arcLine(d);
+                            };
+                        });
+                    };
+
+
+                    var animate = function () {
+                        pathChart.transition()
+                            .duration(750)
+                            .ease('cubic')
+                            .call(arcTween, ((2 * Math.PI)) * ratio);
+
+
+                    };
+
+                    setTimeout(animate, 0);
+
+        div(class='right col-sm-6')
+            div(class='header') 전공 수강 내역
+            table(class='table table-bordered')
+                thead
+                    tr
+                        //td 추천학기
+                        td 과목명
+                        td 팀프로젝트
+                        td 필수여부
+                        //td 실습여부
+                        //td 전공여부
+                tbody
+                    each list in majorList
+                        tr
+                            //td=recommendGrade[i]
+                            td=list.lecture.replace(/\_/g, " ")
+                            td=list.teamProject
+                            td=list.essential
+                            //td=practice[i]
+                            //td=major[i]
+            div(class='header') 교양 수강 내역
+            table(class='table table-bordered')
+                thead
+                    tr
+                        //td 추천학기
+                        td 과목명
+                        td 팀프로젝트
+                        td 필수여부
+                        //td 실습여부
+                        //td 전공여부
+                tbody
+                    each list in culList
+                        tr
+                            //td=recommendGrade[i]
+                            td=list.lecture.replace(/\_/g, " ")
+                            td=list.teamProject
+                            td=list.essential
+                            //td=practice[i]
+                            //td=major[i]

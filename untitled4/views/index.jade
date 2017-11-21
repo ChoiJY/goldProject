@@ -1,0 +1,28 @@
+extends layout
+
+block content
+    div(id='page-wrapper' class='container-fluid')
+        div(class='col-sm-12' style='padding:1cm;')
+            h2(class='wh' style='color:whitesmoke;') 진행중인 대회
+        div(class='col-sm-12')
+            div(id='myCarousel' class='carousel slide' data-ride='carousel')
+                // Indicators
+                ol(class='carousel-indicators')
+                    li(data-target='#myCarousel', data-slide-to='0' class='active')
+                    li(data-target='#myCarousel', data-slide-to='1')
+                    li(data-target='#myCarousel', data-slide-to='2')
+                // Wrapper for slides
+                div(class='carousel-inner' role='listbox')
+                    div(class='item active')
+                        img(class='d-block img-fluid' src='http://appcenter.kr/wp/wp-content/uploads/2013/09/HK_%ED%8A%B9%EC%A0%95%EC%9D%B4%EB%AF%B8%EC%A7%80-02.jpg', alt='Los Angeles', style='width:100%;')
+                    div(class='item')
+                        img(class='d-block img-fluid' src='https://img.kr.news.samsung.com/kr/wp-content/uploads/2016/06/SCPC_%EB%8F%84%EB%B9%84%EB%9D%BC.jpg', alt='Chicago', style='width:100%;')
+                    div(class='item')
+                        img(class='d-block img-fluid' src='https://s3.ap-northeast-2.amazonaws.com/grepp-cloudfront/programmers_imgs/competition-imgs/kakao_codefestival_square.png', alt='New york', style='width:100%;')
+                // Left and right controls
+                a(class='carousel-control-prev', href='#myCarousel', role='button', data-slide='prev')
+                    span(class='carousel-control-prev-icon' aria-hidden='true')
+                    span(class='sr-only') Previous
+                a(class='carousel-control-next', href='#myCarousel', role='button', data-slide='next')
+                    span(class='carousel-control-next-icon' aria-hidden='true')
+                    span(class='sr-only') Next

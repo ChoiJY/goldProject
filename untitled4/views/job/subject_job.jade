@@ -1,0 +1,146 @@
+extends job_des
+block scripts
+    script(src = '/javascripts/cytoscape.js')
+    script(src = '/javascripts/client.js')
+    script(src = '/javascripts/dagre.min.js')
+    script(src = '/javascripts/cytoscape-dagre.js')
+block cytoscape
+    script.
+        window.onload = function(){
+            $('#select').val('#{selectedJob}').attr('selected', 'selected');
+            var cy = cytoscape({
+                container: $('#left'),
+                elements: [{
+                    data: {
+                        id: '#{selectedJob}',
+                        faveShape: 'pentagon',
+                        faveColor: '#3366FF',
+                        href: '/job/company/' + '#{selectedJob}', cost: 100, name: '#{selectedJob}'.replace(/\_/g, " ")
+                    }
+                }],
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            shape: 'data(faveShape)',
+                            content: 'data(name)',
+                            'text-valign': 'center',
+                            'text-outline-width': 2,
+                            'text-outline-color': 'data(faveColor)',
+                            color: 'white',
+                            width: 'data(cost)',
+                            height: 'data(cost)',
+                            'background-fit': 'cover',
+                            'background-color': 'data(faveColor)'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'target-arrow-shape': 'triangle',
+                            'width': 10,
+                            'curve-style': 'bezier',
+                            'line-color': 'data(faveColor)',
+                            'source-arrow-color': 'data(faveColor)',
+                            'target-arrow-color': 'data(faveColor)'
+                        }
+                    },
+                    {
+                        selector: '.select',
+                        style: {
+                            'background-color': 'blue',
+                            'text-outline-width': 3,
+                            'text-outline-color': 'blue',
+                            'line-color': 'blue',
+                            'source-arrow-color': 'blue',
+                            'target-arrow-color': 'blue'
+                        }
+                    }
+                ]
+            });
+            var costList = '#{costList}'.split(',');
+            var l = '#{results}'.split(',');
+            var usl = '#{usList}'.split(',');
+            for(var i in l){
+                if(usl.indexOf(l[i])<0) {
+                    cy.add([
+                        {data: {id: l[i], faveShape: 'ellipse', faveColor: '#FF6600', href: '/subject/preSubject/'+l[i], cost: costList[i]* 10, name: l[i].replace(/\_/g, " ")}}
+                    ]);
+                }else{
+                    cy.add([
+                        {
+                            data: {
+                                id: l[i],
+                                faveShape: 'ellipse',
+                                faveColor: '#FF3333',
+                                href: '/subject/preSubject/' + l[i],
+                                cost: costList[i] * 10,
+                                name: l[i].replace(/\_/g, " ")
+                            }
+                        }
+                    ]);
+                }
+            }
+            var al = '#{aList}'.split(',');
+            for (var j in al) {
+                cy.add([
+                    {data: {id: al[j], faveShape: 'rectangle', faveColor: '#66CC00', href: '/skill/job/' + al[j], cost: 100, name: al[j].replace(/\_/g, " ")}},
+                    {
+                        data: {
+                            id: '#{selectedJob}' + al[j],
+                            target: '#{selectedJob}',
+                            source: al[j],
+                            faveColor: '#66CC00'
+                        }
+                    }
+                ])
+            }
+            var lectureList = '#{lectureList}'.split(',');
+            var abilityList = '#{abilityList}'.split(',');
+            for (var k in abilityList) {
+                cy.add([
+                    {
+                        data: {
+                            id: lectureList[k] + abilityList[k],
+                            source: lectureList[k],
+                            target: abilityList[k],
+                            faveColor: '#FF6600'
+                        }
+                    }
+                ])
+            }
+            cy.layout({
+                name: 'dagre',
+                minLen: 15
+            });
+            cy.on('tap', 'node', function () {
+                try {
+                    location.href = this.data('href');
+                } catch (e) {
+                    //error catch
+                }
+            });
+            cy.on('cxttap', 'node', function (e) {
+                try {
+                    var node = e.cyTarget;
+                    var neighborhood = node.neighborhood().add(node);
+                    cy.elements().removeClass('select');
+                    neighborhood.addClass('select');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+            cy.on('mouseover', 'node', function () {
+                try {
+                    var content = this.data('name');
+                    $('.document').html('<div id="result">' + content + '</div>');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        };
+
+
+
+
+

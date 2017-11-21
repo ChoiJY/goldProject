@@ -1,0 +1,126 @@
+//
+   Created by kmj on 2016-11-05.
+extends subject_des
+block scripts
+    script(src = '/javascripts/cytoscape.js')
+    script(src = '/javascripts/client.js')
+    script(src = '/javascripts/dagre.min.js')
+    script(src = '/javascripts/cytoscape-dagre.js')
+block cytoscape
+    script.
+        window.onload = function(){
+            $('#select').val('#{selectedSubject}').attr('selected', 'selected');
+            var cy = cytoscape({
+                container: $('#left'),
+                elements: [{
+                    data: {id: '#{selectedSubject}', faveColor: '#3366FF', name: '#{selectedSubject}'.replace(/\_/g, " ")}
+                    }],
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            shape: 'circle',
+                            content: 'data(name)',
+                            'text-valign': 'center',
+                            'text-outline-width': 2,
+                            'text-outline-color': 'data(faveColor)',
+                            color: 'white',
+                            width: '150',
+                            height: '150',
+                            'background-fit': 'cover',
+                            'background-color': 'data(faveColor)',
+                            'font-size': 25
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style:{
+                            'target-arrow-shape': 'triangle',
+                            'width': 10,
+                            'curve-style': 'bezier',
+                            'line-color': 'data(faveColor)',
+                            'source-arrow-color': 'data(faveColor)',
+                            'target-arrow-color': 'data(faveColor)'
+                        }
+                    }
+                ]
+            });
+            var l = '#{results}'.split(',');
+            var usl = '#{usList}'.split(',');
+            for(var i in l){
+                if(usl.indexOf(l[i])<0){
+                    cy.add([
+                        {data: {id: l[i], faveColor: '#66CC00', name: l[i].replace(/\_/g, " ")}},
+                        {
+                            data: {
+                                id: l[i] + '#{selectedSubject}',
+                                source: l[i],
+                                target: "#{selectedSubject}",
+                                faveColor: '#66CC00'
+                            }
+                        }
+                    ]);
+                }else{
+                    cy.add([
+                        {data: {id: l[i], faveColor: '#FF3333', name: l[i].replace(/\_/g, " ")}},
+                        {
+                            data: {
+                                id: l[i] + '#{selectedSubject}',
+                                source: l[i],
+                                target: "#{selectedSubject}",
+                                faveColor: '#66CC00'
+                            }
+                        }
+                    ]);
+                }
+            }
+            var ll = '#{postList}'.split(',');
+            for(var j in ll){
+                if (usl.indexOf(ll[j]) < 0) {
+                    cy.add([
+                        {data: {id: ll[j], faveColor: '#FF6600', name: ll[j].replace(/\_/g, " ")}},
+                        {
+                            data: {
+                                id: '#{selectedSubject}' + ll[j],
+                                target: ll[j],
+                                source: "#{selectedSubject}",
+                                faveColor: '#3366FF'
+                            }
+                        }
+                    ]);
+                } else {
+                    cy.add([
+                        {data: {id: ll[j], faveColor: '#FF3333', name: ll[j].replace(/\_/g, " ")}},
+                        {
+                            data: {
+                                id: '#{selectedSubject}' + ll[j],
+                                target: ll[j],
+                                source: "#{selectedSubject}",
+                                faveColor: '#3366FF'
+                            }
+                        }
+                    ]);
+                }
+            }
+            cy.layout({
+                name: 'dagre',
+                minLen: 8
+            });
+            cy.on('tap', 'node', function(){
+               try{
+                   var select = this.data('id');
+                   location.href = '/subject/preSubject/'+select;
+               } catch (e){
+                   //error catch
+               }
+            });
+            cy.on('mouseover', 'node', function () {
+                try {
+                    var content = this.data('name');
+                    $('.document').html('<div id="result">' + content + '</div>');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+
+        };

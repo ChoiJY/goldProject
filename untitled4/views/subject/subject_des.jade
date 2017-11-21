@@ -1,0 +1,76 @@
+//
+   Created by kmj on 2016-11-10.
+extends ../layout
+block content
+    div(class= 'container-fluid' style='background:grey;')
+        div(class='row')
+            div(id='left')
+                block cytoscape
+            div(id='right')
+                h2 Subject Menu
+                h3 #{q}
+                br
+                h4 select subject
+                select(class='form-control', id='select')
+                    each subjectName in subjectList
+                        option(value=subjectName) #{subjectName.replace(/\_/g, " ")}
+                br
+                h4 select query
+                li
+                    span(class= 'glyphicon glyphicon-question-sign test', data-toggle="tooltip", data-placement="bottom", title="선택한 과목을 듣기 전 수강해야 하는 과목을 보여줍니다")
+                    button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt1Click();') 이 과목의 선수 과목은?
+                    span(class= 'glyphicon glyphicon-question-sign test', data-toggle="tooltip", data-placement="bottom", title="선택한 과목을 들은 후에 수강할 수 있는 과목을 보여줍니다")
+                    button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt2Click();') 이 과목의 후수 과목은?
+                    //button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt3Click();') 같은 분류의 과목
+                    span(class= 'glyphicon glyphicon-question-sign test', data-toggle="tooltip", data-placement="bottom", title="선택한 과목을 통해서 얻을 수 있는 역량을 보여줍니다")
+                    button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt4Click()') 이 과목으로 얻을 수 있는 역량은?
+                    span(class= 'glyphicon glyphicon-question-sign test', data-toggle="tooltip", data-placement="bottom", title="선택한 과목에서 얻을 수 있는 역량과 같은 역량을 얻을 수 있는 과목을 보여줍니다")
+                    button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt5Click()') 이 과목과 같은 역량을 얻을 수 있는 과목은?
+                    span(class= 'glyphicon glyphicon-question-sign test', data-toggle="tooltip", data-placement="bottom", title="선택한 과목을 수강했을 때 지원할 수 있는 직무를 보여줍니다")
+                    button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt6Click()') 이 과목을 통해 지원할 수 있는 직무는?
+                script.
+                    function bt1Click(){
+                        var selectedSubject = $('#select').val();
+                        location.href = '/subject/preSubject/'+selectedSubject;
+                    }
+                    function bt2Click(){
+                        var selectedSubject = $('#select').val();
+                        location.href = '/subject/postSubject/'+selectedSubject;
+                    }
+                    function bt3Click(){
+                        var selectedSubject = $('#select').val();
+                        location.href = '/subject/category/'+selectedSubject;
+                    }
+                    function bt4Click() {
+                        var selectedSubject = $('#select').val();
+                        location.href = '/subject/skill/' + selectedSubject;
+                    }
+                    function bt5Click() {
+                        var selectedSubject = $('#select').val();
+                        location.href = '/subject/sameSkillSubject/' + selectedSubject;
+                    }
+                    function bt6Click() {
+                        var selectedSubject = $('#select').val();
+                        location.href = '/subject/job/' + selectedSubject;
+                    }
+                    $(document).ready(function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
+                br
+                h4 query results
+                table(class='table table-hover')
+                    thead
+                        tr
+                            td #
+                            td Results
+                    tbody
+                        -var i = 1;
+                        each result in results
+                            tr
+                                td=i++
+                                td=result.replace(/\_/g, " ")
+                br
+                h4 description
+                div(id='description')
+                    p=d
+                    //description

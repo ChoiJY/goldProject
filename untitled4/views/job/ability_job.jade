@@ -1,0 +1,90 @@
+extends job_des
+block scripts
+    script(src = '/javascripts/cytoscape.js')
+    script(src = '/javascripts/client.js')
+    script(src = '/javascripts/dagre.min.js')
+    script(src = '/javascripts/cytoscape-dagre.js')
+block cytoscape
+    script.
+        window.onload = function () {
+            $('#select').val('#{selectedJob}').attr('selected', 'selected');
+            var cy = cytoscape({
+                container: $('#left'),
+                elements: [{
+                    data: {
+                        id: '#{selectedJob}',
+                        faveShape: 'pentagon',
+                        faveColor: '#3366FF',
+                        href: '/job/company/' + '#{selectedJob}', cost: 100, name: '#{selectedJob}'.replace(/\_/g, " ")
+                    }
+                }],
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            shape: 'data(faveShape)',
+                            content: 'data(name)',
+                            'text-valign': 'center',
+                            'text-outline-width': 5,
+                            'text-outline-color': 'data(faveColor)',
+                            color: 'white',
+                            width: 'data(cost)',
+                            height: 'data(cost)',
+                            'background-fit': 'cover',
+                            'background-color': 'data(faveColor)'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'target-arrow-shape': 'triangle',
+                            'width': 10,
+                            'curve-style': 'bezier',
+                            'line-color': 'data(faveColor)',
+                            'source-arrow-color': 'data(faveColor)',
+                            'target-arrow-color': 'data(faveColor)'
+                        }
+                    }
+                ]
+            });
+            var costList = '#{costList}'.split(',');
+            var l = '#{results}'.split(',');
+            for (var i in l) {
+                if (l[i] != '#{selectedJob}') {
+                    cy.add([
+                        {data: {id: l[i], faveShape: 'rectangle', faveColor: '#FF6600', href: '/skill/subject/' + l[i], cost: costList[i], name: l[i].replace(/\_/g, " ")}},
+                        {
+                            data: {
+                                id: l[i] + '#{selectedJob}',
+                                source: l[i],
+                                target: "#{selectedJob}",
+                                faveColor: '#FF6600'
+                            }
+                        }
+                    ]);
+                }
+            }
+            cy.layout({
+                name: 'concentric'
+            });
+            cy.on('tap', 'node', function () {
+                try {
+                    location.href = this.data('href');
+                } catch (e) {
+                    //error catch
+                }
+            });
+            cy.on('mouseover', 'node', function () {
+                try {
+                    var content = this.data('name');
+                    $('.document').html('<div id="result">' + content + '</div>');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        };
+
+
+
+
+

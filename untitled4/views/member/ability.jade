@@ -1,0 +1,31 @@
+extends mypage
+block menu
+    div(class = 'mypage-div container-fluid')
+        div(class='left col-sm-6 center-block' style='text-align:center;')
+            div(class='header') 전공 역량
+            table(class='table table-bordered' id='majorSkill')
+                thead
+                    tr
+                        td 역량
+                        td count
+                tbody
+                    -var i = 0;
+                    each skill in majors
+                        tr
+                            td=skill.replace(/\_/g, " ")
+                            td=major_costs[i]
+                        -i++;
+        div(class='right col-sm-6 center-block' style='text-align:center')
+            div(class='header') 기초 역량
+            table(class='table table-bordered', id='basicSkill', style='overflow:scroll;')
+                thead
+                    tr
+                        td 역량
+                        td count
+                tbody
+                    -var j = 0;
+                    each skill in basics
+                        tr
+                            td=skill.replace(/\_/g, "")
+                            td=basic_costs[j]
+                        -j++;

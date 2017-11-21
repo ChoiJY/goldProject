@@ -1,0 +1,138 @@
+extends subject_des
+block scripts
+    script(src = '/javascripts/cytoscape.js')
+    script(src = '/javascripts/client.js')
+    script(src = '/javascripts/dagre.min.js')
+    script(src = '/javascripts/cytoscape-dagre.js')
+block cytoscape
+    script.
+        window.onload = function(){
+            $('#select').val('#{selectedSubject}').attr('selected', 'selected');
+            var cy = cytoscape({
+                container: $('#left'),
+                elements: [{
+                    data: {id: '#{selectedSubject}',
+                        faveShape: 'ellipse',
+                        faveColor: '#3366FF',
+                        href: '/subject/preSubject/' + '#{selectedSubject}', cost: 100, name: '#{selectedSubject}'.replace(/\_/g, " ")}
+                }],
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            shape: 'data(faveShape)',
+                            content: 'data(name)',
+                            'text-valign': 'center',
+                            'text-outline-width': 3,
+                            'text-outline-color': 'data(faveColor)',
+                            color: 'white',
+                            width: 'data(cost)',
+                            height: 'data(cost)',
+                            'background-fit': 'cover',
+                            'background-color': 'data(faveColor)'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style:{
+                            'target-arrow-shape': 'triangle',
+                            'width': 10,
+                            'curve-style': 'bezier',
+                            'line-color': 'data(faveColor)',
+                            'source-arrow-color': 'data(faveColor)',
+                            'target-arrow-color': 'data(faveColor)'
+                        }
+                    },
+                    {
+                        selector: '.select',
+                        style:{
+                            'background-color': 'blue',
+                            'text-outline-width': 3,
+                            'text-outline-color': 'blue',
+                            'line-color': 'blue',
+                            'source-arrow-color': 'blue',
+                            'target-arrow-color': 'blue'
+                        }
+                    }
+                ]
+            });
+            var costList = '#{costList}'.split(',');
+            var l = '#{results}'.split(',');
+            var usl = '#{usList}'.split(',');
+            for(var i in l){
+                if(l[i] != '#{selectedSubject}') {
+                    if(usl.indexOf(l[i])<0){
+                        cy.add([
+                            {
+                                data: {
+                                    id: l[i],
+                                    faveColor: '#FF6600',
+                                    faveShape: 'ellipse',
+                                    href: '/subject/preSubject/' + l[i],
+                                    cost: costList[i] * 50,
+                                    name: l[i].replace(/\_/g, " ")
+                                }
+                            }
+                        ]);
+                    }else{
+                        cy.add([
+                            {
+                                data: {
+                                    id: l[i],
+                                    faveColor: '#FF3333',
+                                    faveShape: 'ellipse',
+                                    href: '/subject/preSubject/' + l[i],
+                                    cost: costList[i] * 50,
+                                    name: l[i].replace(/\_/g, " ")
+                                }
+                            }
+                        ]);
+                    }
+                }
+            }
+            var al = '#{aList}'.split(',');
+            for(var j in al){
+                cy.add([
+                    {data: {id: al[j], faveColor:'#66CC00', faveShape: 'rectangle', href: '/skill/job/' + al[j], cost: 100, name: al[j].replace(/\_/g, " ")}},
+                    {data: {id: '#{selectedSubject}'+al[j], source: '#{selectedSubject}', target:al[j], faveColor: '#3366FF'}}
+                ]);
+            }
+            var abilityList = '#{abilityList}'.split(',');
+            var lectureList = '#{lectureList}'.split(',');
+            for(var k in abilityList){
+                if(lectureList[k] != '#{selectedSubject}')
+                    cy.add([
+                        {data: {id: abilityList[k] + lectureList[k], source: lectureList[k], target: abilityList[k], faveColor: '#FF6600'}}
+                    ]);
+            }
+            cy.layout({
+                name: 'dagre',
+                minLen: 10
+            });
+            cy.on('tap', 'node', function () {
+                try {
+                    location.href = this.data('href');
+                } catch (e) {
+                    //error catch
+                }
+            });
+            cy.on('cxttap', 'node', function (e) {
+                try {
+                    var node = e.cyTarget;
+                    var neighborhood = node.neighborhood().add(node);
+                    cy.elements().removeClass('select');
+                    neighborhood.addClass('select');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+            cy.on('mouseover', 'node', function () {
+                try {
+                    var content = this.data('name');
+                    $('.document').html('<div id="result">' + content + '</div>');
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        };
+

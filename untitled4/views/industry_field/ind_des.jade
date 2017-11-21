@@ -1,0 +1,37 @@
+
+extends ../layout
+block content
+    div(id = 'page-wrapper')
+        div(id='right')
+            h4 select industry fields
+            select(class='form-control', id='select')
+                each ifName in ifList
+                    option(value=ifName) #{ifName}
+            h4 select query
+            li
+                button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt1Click();') 직무
+
+            script.
+                function bt1Click(){
+                    var selectedIF = $('#select').val();
+                    location.href = '/industry/job/' + selectedIF;
+                }
+            h4 query results
+            table(class='table table-hover')
+                thead
+                    tr
+                        td #
+                        td Results
+                tbody
+                    -var i = 1;
+                    each result in results
+                        tr
+                            td=i++
+                            td=result
+                    //results table -- add if results!=null
+            h4 description
+            div(id='description')
+                p whole industry field list
+                //description
+        div(id='left')
+            block cytoscape

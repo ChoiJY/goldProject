@@ -1,0 +1,177 @@
+//
+   Created by kmj on 2016-11-04.
+
+extends subject_des
+block scripts
+    script(src = '/javascripts/cytoscape.js')
+block cytoscape
+    script.
+        $(document).ready(function () {
+            var listendList = '#{usList}'.split(',');
+            var postList = '#{postList}';
+            var wholeList = '#{subjectList}'.split(',');
+            console.log(postList.source);
+            console.log(postList.dest);
+
+            var links = [];
+
+            for (var i in wholeList) {
+                for(var j in postList){
+                    links.push({source: wholeList[i], target: postList[j]});
+                }
+            }
+            console.log(links);
+
+            var nodes = {};
+
+            // Compute the distinct nodes from the links.
+            links.forEach(function (link) {
+                link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+                link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+            });
+
+            var width = $('#left').innerWidth(),
+                height = $('#left').innerHeight();
+
+            var force = d3.layout.force()
+                .nodes(d3.values(nodes))
+                .links(links)
+                .size([width, height / 2])
+                .linkDistance(40)
+                .charge(-300)
+                .on("tick", tick)
+                .start();
+
+            var svg = d3.select("#left").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+            $('#left').css({
+                'text-align': 'center'
+            })
+
+            var link = svg.selectAll(".link")
+                .data(force.links())
+                .enter().append("line")
+                .attr("class", "link");
+
+            var node = svg.selectAll(".node")
+                .data(force.nodes())
+                .enter().append("g")
+                .attr("class", "node")
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout)
+                .call(force.drag)
+                .on('click', function () {
+                    console.log(d3.select(this).text());
+                    location.href = '/subject/preSubject/' + d3.select(this).text()
+                })
+
+            node.append("circle")
+                .attr("r", 8)
+
+            node.append("text")
+                .attr("x", 15)
+                .attr("dy", "1em")
+                .attr("fill", "whitesmoke")
+                .text(function (d) {
+                    return d.name;
+                });
+
+            function tick() {
+                link
+                    .attr("x1", function (d) {
+                        return d.source.x;
+                    })
+                    .attr("y1", function (d) {
+                        return d.source.y;
+                    })
+                    .attr("x2", function (d) {
+                        return d.target.x;
+                    })
+                    .attr("y2", function (d) {
+                        return d.target.y;
+                    });
+
+                node
+                    .attr("transform", function (d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
+            }
+
+            function mouseover() {
+                d3.select(this).select("circle").transition()
+                    .duration(750)
+                    .attr("r", 16);
+            }
+
+            function mouseout() {
+                d3.select(this).select("circle").transition()
+                    .duration(750)
+                    .attr("r", 8);
+            }
+        });
+
+        //window.onload = function () {
+        //    var cy = cytoscape({
+        //        container: $('#left'),
+        //        elements: [],
+        //        style: [
+        //            {
+        //                selector: 'node',
+        //                style: {
+        //                    shape: 'circle',
+        //                    'text-valign': 'center',
+        //                    'text-outline-width': 2,
+        //                    'text-outline-color': 'data(faveColor)',
+        //                    color: 'white',
+        //                    'background-color': 'data(faveColor)',
+        //                    label: 'data(name)',
+        //                    width: '100',
+        //                    height: '100',
+        //                    'background-fit': 'cover'
+        //                }
+        //            }]
+        //    });
+        //
+        //    // list에 과목들 나옴
+        //    var list = '
+        //
+        //
+        //#{subjectList}'.split(',');
+        ////    var usl = '
+        //
+        //
+        //#{usList}'.split(',');
+        //    for(var i in list){
+        //        if(usl.indexOf(list[i])<0){
+        //            cy.add({
+        //                data: {id: list[i], name: list[i].replace(/\_/g, " "), faveColor: '#3366FF'}
+        //            });
+        //        }else{
+        //            cy.add({
+        //                data: {id: list[i], name: list[i].replace(/\_/g, " "), faveColor: '#FF3333'}
+        //            });
+        //        }
+        //    }
+        //    cy.layout({
+        //        name: 'grid'
+        //    });
+        //
+        //    cy.on('tap', 'node', function () {
+        //        try {
+        //            var select = this.data('id');
+        //            location.href = '/subject/preSubject/' + select;
+        //        } catch (e) {
+        //            //error catch
+        //        }
+        //    });
+        //    cy.on('mouseover', 'node', function () {
+        //        try {
+        //            var content = this.data('name');
+        //            $('.document').html('<div id="result">' + content + '</div>');
+        //        } catch (e) {
+        //            console.log(e);
+        //        }
+        //    });
+        //};
+

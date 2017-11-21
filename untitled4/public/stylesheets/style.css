@@ -1,0 +1,178 @@
+html, body {
+    height: 100%;
+    overflow: scroll;
+}
+
+li {
+    list-style: none;
+}
+
+#left {
+    /*width: 1250px;*/
+    min-height: 1000px;
+    width: 70%;
+    /*padding: 20px;*/
+    margin-bottom: 20px;
+    float: left;
+}
+
+#right {
+    width: 30%;
+    height: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    right: 0;
+    float: right;
+    background-color: whitesmoke;
+}
+
+#mypage-left {
+    width: 10%;
+    padding: 20px;
+    margin-bottom: 20px;
+    float: left;
+    height: 100%;
+}
+
+#mypage-right {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 20px;
+    right: 0;
+    float: right;
+    height: 100%;
+}
+
+thead {
+    font-weight: bold;
+}
+
+h2 {
+    text-align: center;
+}
+
+#login-form {
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: inline-block;
+    text-align: left;
+}
+
+#inner {
+    padding: 30px;
+}
+
+#login-wrapper {
+    text-align: center;
+}
+
+#wr {
+    padding: 20px;
+    /*width: 100%;*/
+    background: #333333;
+}
+
+#result {
+    color: white;
+    font-size: x-large;
+    text-align: center;
+}
+
+/* Tooltip */
+.test + .tooltip > .tooltip-inner {
+    background-color: white;
+    color: #333333;
+    border: 1px solid black;
+    padding: 15px;
+    font-size: 15px;
+}
+
+/* Tooltip on bottom */
+.test + .tooltip.bottom > .tooltip-arrow {
+    border-bottom: 5px solid black;
+}
+
+.mypage-div {
+    background-color: whitesmoke;
+    padding: 5%;
+    width: 100%;
+    min-height: 100%;
+    overflow: scroll;
+}
+
+#cys {
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.userName {
+    font-size: 18px;
+    padding-top: 10%;
+    text-align: center;
+    color: #2a649F;
+}
+
+.header {
+    background-color: #29384D;
+    height: 40px;
+    color: #929DAF;
+    text-align: center;
+    line-height: 40px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    font-weight: 400;
+    font-size: 1.5em;
+    text-shadow: 1px 1px #06060d;
+}
+
+.shadow {
+    -webkit-filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, .5));
+    filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, .5));
+}
+
+.carousel-inner {
+    width: 80%;
+    height: 500px;
+}
+
+.radar-chart .area {
+    fill-opacity: 0.7;
+}
+
+.radar-chart.focus .area {
+    fill-opacity: 0.3;
+}
+
+.radar-chart.focus .area.focused {
+    fill-opacity: 0.9;
+}
+
+.area.germany, .germany .circle {
+    fill: #FFD700;
+    stroke: none;
+}
+
+text:hover {
+    cursor: pointer
+}
+.link {
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
+}
+
+.node circle {
+    fill: #261fcc;
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+text {
+    font: 10px sans-serif;
+    pointer-events: none;
+}

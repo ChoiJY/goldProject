@@ -1,0 +1,54 @@
+doctype html
+html
+  head
+    title= title
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/assets/css/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/assets/css/font-awesome.css')
+    link(rel='stylesheet', href='/stylesheets/assets/css/custom.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans', type='text/css')
+    script(src='https://code.jquery.com/jquery-1.9.1.min.js')
+    script(src='/stylesheets/assets/js/bootstrap.min.js', type='text/javascript')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js')
+    //script(type='text/javascript', src='/javascripts/javascript.js')
+    block scripts
+  body
+    div(id='wrapper')
+        div(class='navbar navbar-inverse navbar-fixed-top')
+            div(class='adjust-nav')
+                div(class='navbar-header')
+                    a(class='navbar-brand', href='/') GOLD
+                    button(type='button', class='navbar-toggle', data-toggle='collapse', data-target='#menubar')
+                        span(class='icon-bar')
+                        span(class='icon-bar')
+                        span(class='icon-bar')
+                ul(class='nav navbar-nav collapse' id='menubar')
+                    li
+                        a(href='/subject') Subject
+                    li
+                        a(href='/skill') Skill
+                    li
+                        a(href='/job') Job
+                    li
+                        a(href='/company') Company
+                    li
+                        a(href='/member') My Page
+                        //a(href='/industry') Industry Field
+                    ul(class = 'nav navbar-nav navbar-right')
+                        - if(userInfo == undefined)
+                            li
+                                a(href='/member/login')
+                                    span(class='glyphicon glyphicon-log-in' style='padding-left:15px;')
+                                    |&nbsp;Login
+                        - else
+                            li
+                                a(class='userName') #{userInfo.userName.replace(/\_/g, ' ')} 님
+                            li
+                                a(href='/member/logout')
+                                    span(class='glyphicon glyphicon-log-out')
+                                    |&nbsp;Logout
+                script.
+                    if (window.innerWidth > 768)
+                        $("#menubar").collapse()
+        block content

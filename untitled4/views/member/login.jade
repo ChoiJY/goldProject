@@ -1,0 +1,30 @@
+extends ../layout
+block content
+    script.
+
+    div(class = 'container-fluid' style='background:#333333; min-height:100%;')
+        div(id = 'login' style='')
+            h2(style='color : whitesmoke;') LOG IN
+            br
+            div(id='login-wrapper' class='container-fluid')
+                - if(err != '')
+                    div(class = 'alert alert-danger col-md-offset-4 col-md-4') 로그인에 실패하였습니다
+                        br
+                        strong 아이디와 비밀번호를 다시 확인해 주세요
+                form(action='/member/login', method='post', id='login-form')
+                    div(class='container-fluid')
+                        div(class='input-group' style='margin-bottom:10px;')
+                            span(class='input-group-addon')
+                                span(class='glyphicon glyphicon-user')
+                            input(type = 'text', name='inputID', id='inputID', class='form-control', placeholder='ID')
+                        br
+                        div(class='input-group' style='margin-bottom:10px;')
+                            span(class='input-group-addon')
+                                span(class='glyphicon glyphicon-lock')
+                            input(type= 'password', name='inputPwd', class='form-control', id='inputPWD', placeholder='Password')
+                        br
+                        div(class='button-group')
+                            button(type='submit', class='btn btn-default' style='border-radius:5px;') Login
+                            a(href='./join', class='btn btn-info' style='border-radius:5px; float:right;') Join
+                    //a(href='/?')
+                        button(class='btn btn-default btn-sm') general mode

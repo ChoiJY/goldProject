@@ -1,0 +1,145 @@
+extends mypage
+block scripts
+    script(src = '/javascripts/cytoscape.js')
+    script(src = '/javascripts/cytoscape.min.js')
+
+    link(rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css")
+    link(rel="stylesheet" href="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.css")
+
+    script(src="http://d3js.org/d3.v3.js")
+    script(src="https://rawgit.com/tpreusse/radar-chart-d3/master/src/radar-chart.js")
+block menu
+    div(class = 'container-fluid' style = 'background-color:whitesmoke; min-height:100%; padding:20px;')
+        div(class='left col-sm-6 center-block')
+            // cytoscrape
+            //div(id='cys')
+            //    script.
+            //        var fontSize = 10;
+            //        window.onload = function () {
+            //            if (window.innerWidth > 768) {
+            //                $('#cys').css('height', '500')
+            //                fontSize = 20;
+            //            }
+            //            var cy = cytoscape({
+            //                container: $('#cys'),
+            //                elements: [],
+            //                style: [
+            //                    {
+            //                        selector: 'node',
+            //                        style: {
+            //                            shape: 'ellipse',
+            //                            content: 'data(name)',
+            //                            'text-valign': 'center',
+            //                            'text-outline-width': 2,
+            //                            'text-outline-color': 'data(faveColor)',
+            //                            color: 'white',
+            //                            width: 'data(cost)',
+            //                            height: 'data(cost)',
+            //                            'background-fit': 'cover',
+            //                            'background-color': 'data(faveColor)',
+            //                            'font-size': fontSize
+            //                        }
+            //                    }
+            //                ]
+            //            });
+            //            cy.userZoomingEnabled(false);
+            //            var list = '#{jobs}'.split(',');
+            //            var weight;
+            //            if (window.innerWidth > 768) weight = 50;
+            //            else weight = 25;
+            //            cy.add({
+            //                data: {
+            //                    id: list[0], name: list[0].replace(/\_/g, "\n").replace(/Engineering/gi, ""),
+            //                    faveColor: '#3366FF',
+            //                    cost: $('#cys').width() / 10 + weight * 3
+            //                }, position: {x: $('#cys').innerWidth() / 6, y: $('#cys').innerHeight() / 2}
+            //            });
+            //            cy.add({
+            //                data: {
+            //                    id: list[1],
+            //                    name: list[1].replace(/\_/g, " ").replace(/Engineering/gi, ""),
+            //                    faveColor: '#3366FF',
+            //                    cost: $('#cys').width() / 10 + weight * 2
+            //                }, position: {x: $('#cys').innerWidth() / 6 * 3, y: $('#cys').innerHeight() / 2}
+            //            });
+            //            cy.add({
+            //                data: {
+            //                    id: list[2],
+            //                    name: list[2].replace(/\_/g, " ").replace(/Engineering/gi, ""),
+            //                    faveColor: '#3366FF',
+            //                    cost: $('#cys').width() / 10 + weight * 1
+            //                }, position: {x: $('#cys').innerWidth() / 6 * 5, y: $('#cys').innerHeight() / 2}
+            //            });
+            //            cy.nodes().lock();
+            //            cy.userPanningEnabled(false);
+            //            cy.layout({
+            //                name: 'preset', fit: false
+            //            });
+            //            cy.on('tap', 'node', function () {
+            //                try {
+            //                    var select = this.data('id');
+            //                    location.href = '/job/company/' + select;
+            //                    //click시 동작 추가
+            //                } catch (e) {
+            //                    //error catch
+            //                }
+            //            });
+            //        }
+            div(class='radarChart')
+                script.
+                    // input our data from routes.js
+                    RadarChart.defaultConfig.color = function() {};
+                    RadarChart.defaultConfig.radius = 3;
+                    RadarChart.defaultConfig.w = $('.radarChart').innerWidth();
+                    RadarChart.defaultConfig.h = $('.radarChart').innerWidth();
+                    var jobList = '#{jobs}'.split(',')
+                    var costList = '#{costs}'.split(',')
+                    var data = [
+                        {
+                            className: 'germany', // optional can be used for styling
+                            axes: [
+                                {axis: jobList[0], value: parseInt(costList[0])/10},
+                                {axis: jobList[1], value: parseInt(costList[1])/10},
+                                {axis: jobList[2], value: parseInt(costList[2])/10},
+                                {axis: jobList[3], value: parseInt(costList[3])/10}
+                            ]
+                        }
+                    ];
+
+                    var chart = RadarChart.chart();
+                    if (window.innerWidth <= 800 && window.innerHeight <= 600) {
+                        $('.radarChart').css({
+                            'min-height': 350
+                        })
+                    }
+                    $('.radarChart').css({
+                        'min-height': $('body').height()
+                    })
+                    var svg = d3.select('.radarChart').append('svg')
+                        .attr('width', $('.radarChart').innerWidth())
+                        .attr('height', $('.radarChart').innerHeight());
+                    svg.append('g').classed('focus', 1).datum(data).call(chart);
+                    w = $('.radarChart').innerWidth()
+                    h = $('.radarChart').innerHeight()
+                    $('polygon').css({
+                        "width": w,
+                        "height": h
+                    });
+                    $('text').on("click", function(){
+                        location.href = '/job/company/' + $(this).html();
+                    });
+
+        div(class='right col-sm-6 center-block')
+            div(class='header') 나에게 가장 맞는 직무는?
+            table(class='table table-bordered')
+                thead
+                    tr
+                        td #
+                        td 직무명
+                tbody
+                    -var i = 1;
+                    each job in jobs
+                        tr
+                            td=i
+                            td=job.replace(/\_/g, " ")
+                        -i++;

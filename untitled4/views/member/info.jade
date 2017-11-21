@@ -1,0 +1,33 @@
+extends mypage
+block menu
+    div(class = 'pagewrapper' style='background-color:whitesmoke; min-height:100%;')
+        div(class = 'container-fluid')
+            div(class = 'myPage')
+                h2(style='padding-top:10%; padding-bottom:10%;') 회원 정보
+                div(class = 'col-sm-4 imgField')
+                    form(class='input-group' style='margin')
+                    img(class='img-circle center-block' alt='yourProfilePic' src=imageSrc)
+                    button(class='btn btn-primary btn-md center-block' style='margin: 10px auto 10px auto  ;') 수정하기
+                div(class = 'col-sm-8 infoField')
+                    h4(class='text-center' style = 'padding-top:10px; padding-bottom:10px;') 학번 : #{studentNum}
+                    h4(class='text-center' style = 'padding-top:10px; padding-bottom:10px;') 이름 : #{userName.replace(/\_/g, " ")}
+                    h4(class='text-center' style = 'padding-top:10px; padding-bottom:10px;') 전공 : #{major.replace(/\_/g, " ")}
+                    h4(class='text-center' style = 'padding-top:10px; padding-bottom:10px;') 학년 : #{grade}
+        //div(class = 'mypage-div')
+        //    h2 회원 정보
+        //    br
+        //    div(id='mypage-left' class='text-center')
+        //        img(src=imageSrc, id='userImage', width=150, height=200)
+        //    div(id='mypage-right')
+        //        h4(class='text-center') 이름 : #{userName.replace(/\_/g, " ")}
+        //        br
+        //        h4(class='text-center') 학번: #{studentNum}
+        //        br
+        //        h4(class='text-center') 전공 : #{major.replace(/\_/g, " ")}
+        //        br
+        //        //h4 이수학기: #{semester}
+        //        //br
+        //        h4(class='text-center') 학년 : #{grade}
+        //        //br
+        //        //h4 e-mail: #{email}
+
