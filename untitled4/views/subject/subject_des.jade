@@ -2,11 +2,16 @@
    Created by kmj on 2016-11-10.
 extends ../layout
 block content
-    div(class= 'container-fluid' style='background:grey;')
+    div(class= 'container-fluid' style='background:#333333;')
         div(class='row')
             div(id='left')
                 block cytoscape
             div(id='right')
+                script.
+                    $(document).ready(function () {
+                        var leftSize = $('#left').innerHeight() + 'px'
+                        $('#right').css('min-height', leftSize);
+                    })
                 h2 Subject Menu
                 h3 #{q}
                 br

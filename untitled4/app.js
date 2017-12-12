@@ -56,6 +56,7 @@ app.use(function(req, res, next) {
 
 // mongodb connect
 var db = mongoose.connection;
+var dbUri = 'mongodb://root:0000@ds243295.mlab.com:43295/golduser';
 var userModel;
 
 db.on('error', console.error);
@@ -83,7 +84,7 @@ db.once('open', function(){
     // });
 });
 
-mongoose.connect('mongodb://root:0000@ds243295.mlab.com:43295/golduser');
+mongoose.createConnection(dbUri);
 
 // error handlers
 

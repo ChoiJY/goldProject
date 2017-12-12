@@ -7,37 +7,52 @@ block scripts
 block cytoscape
     script.
         $(document).ready(function () {
-            var listendList = '#{usList}'.split(',');
-            var postList = '#{postList}';
-            var wholeList = '#{subjectList}'.split(',');
-            console.log(postList.source);
-            console.log(postList.dest);
+            // 개선 필요한부분 subjectList와 postList match 필요
+            var subjectList = '!{subjectList}'.split(',');
+            var listendList = '!{usList}'.split(',');
+            var postLists = !{postLists};
 
             var links = [];
 
-            for (var i in wholeList) {
-                for(var j in postList){
-                    links.push({source: wholeList[i], target: postList[j]});
+            for (var i = 0; i < postLists.length; i++) {
+                if (postLists[i].length > 2) {
+                    for (var j = 1; j < postLists[i].length; j++) {
+
+                        var item = {};
+
+                        // 듣지 않은 과목인 경우, notYet
+                        if (listendList.indexOf(postLists[i][0]) == -1) {
+                            item.source = postLists[i][0];
+                            item.description = 'notYet';
+                        }
+                        // 들었던 과목인 경우, listened
+                        else {
+                            item.source = postLists[i][0];
+                            item.description = 'listened';
+                        }
+                        item.target = postLists[i][j];
+                        links.push(item);
+                    }
                 }
             }
-            console.log(links);
 
-            var nodes = {};
-
+            var nodes = [];
+            //var nodes = {};
+            var width = $('#left').innerWidth(),
+                height = $('#left').innerHeight();
+            console.log(links)
             // Compute the distinct nodes from the links.
             links.forEach(function (link) {
                 link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
                 link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
             });
-
-            var width = $('#left').innerWidth(),
-                height = $('#left').innerHeight();
+            console.log(nodes)
 
             var force = d3.layout.force()
                 .nodes(d3.values(nodes))
                 .links(links)
                 .size([width, height / 2])
-                .linkDistance(40)
+                .linkDistance(150)
                 .charge(-300)
                 .on("tick", tick)
                 .start();
@@ -45,9 +60,6 @@ block cytoscape
             var svg = d3.select("#left").append("svg")
                 .attr("width", width)
                 .attr("height", height);
-            $('#left').css({
-                'text-align': 'center'
-            })
 
             var link = svg.selectAll(".link")
                 .data(force.links())
@@ -63,11 +75,17 @@ block cytoscape
                 .call(force.drag)
                 .on('click', function () {
                     console.log(d3.select(this).text());
-                    location.href = '/subject/preSubject/' + d3.select(this).text()
-                })
+                    location.href = '/subject/preSubject/' + d3.select(this).text();
+                });
 
             node.append("circle")
                 .attr("r", 8)
+                .attr("fill", colorCheck);
+
+            function colorCheck(d) {
+                if (listendList.indexOf(d.name) == -1) return "red";
+                else return "blue";
+            };
 
             node.append("text")
                 .attr("x", 15)
@@ -109,7 +127,10 @@ block cytoscape
                     .duration(750)
                     .attr("r", 8);
             }
+
         });
+
+        // 기존 cytoscrape 이용
 
         //window.onload = function () {
         //    var cy = cytoscape({
@@ -137,11 +158,13 @@ block cytoscape
         //    var list = '
         //
         //
-        //#{subjectList}'.split(',');
+        //
+        //
         ////    var usl = '
         //
         //
-        //#{usList}'.split(',');
+        //
+        //
         //    for(var i in list){
         //        if(usl.indexOf(list[i])<0){
         //            cy.add({

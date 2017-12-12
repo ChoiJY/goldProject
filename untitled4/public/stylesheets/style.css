@@ -160,6 +160,7 @@ h2 {
 text:hover {
     cursor: pointer
 }
+
 .link {
     fill: none;
     stroke: #666;
@@ -167,7 +168,6 @@ text:hover {
 }
 
 .node circle {
-    fill: #261fcc;
     stroke: #fff;
     stroke-width: 1.5px;
 }
@@ -175,4 +175,34 @@ text:hover {
 text {
     font: 10px sans-serif;
     pointer-events: none;
+}
+
+circle[class*='sk'] {
+    fill: #ff9700;
+    background: #ff9700;
+}
+
+circle[class*='samsung'] {
+    fill: #2721ff;
+    background: #2721ff;
+}
+
+circle[class*='lg'] {
+    fill: #ff160a;
+    background: #ff160a;
+}
+
+circle[class*='kt'] {
+    fill: #ff00f1;
+    background: #ff00f1;
+}
+
+circle[class*='hyundai'] {
+    fill: green;
+    background: green;
+}
+
+clrcle{
+    fill: blue;
+    background: blue;
 }

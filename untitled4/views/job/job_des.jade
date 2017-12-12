@@ -7,6 +7,11 @@ extends ../layout
 block content
     div(id = 'page-wrapper')
         div(id='right')
+            script.
+                $(document).ready(function () {
+                    var leftSize = $('#left').innerHeight() + 'px'
+                    $('#right').css('min-height', leftSize);
+                })
             h2 Job Menu
             h3 #{q}
             br

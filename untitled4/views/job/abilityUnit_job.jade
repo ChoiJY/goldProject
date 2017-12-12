@@ -64,7 +64,8 @@ block cytoscape
                 }
             }
             cy.layout({
-                name: 'concentric'
+                name: 'dagre',
+                minlen: 2
             });
             cy.on('tap', 'node', function () {
                 try {

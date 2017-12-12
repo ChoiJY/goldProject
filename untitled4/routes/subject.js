@@ -61,6 +61,7 @@ router.get('/:queryType?/:selectedSubject', function (req, res, next) {
             query.preSubjectList(subjectClass).then(function (preList) {
                 query.postSubjectList(subjectClass).then(function (postList) {
                     query.infoSubjectList(subjectClass).then(function (description) {
+                        console.log(postList);
                         if (req.session.userInfo != undefined) {
                             query.student_subjectList(req.session.userInfo.userName).then(function (userSubjectList) {
                                 var usl = [];
@@ -191,39 +192,30 @@ router.get('/:queryType?/:selectedSubject', function (req, res, next) {
 router.get('/', function (req, res, next) {
 
     query.subjectList().then(function (list) {
-        var postLists = [];
-        for(var i=0; i<list.length; i++){
-            query.postSubjectList(list[i]).then(function (postList) {
-                var item = {'source':list[i],
-                            'dest':postList };
-
-                postLists.push(item);
-                // console.log(postLists);
-            });
-        }
-
-        if (req.session.userInfo != undefined) {
-            mongoQuery.subjectLists(req.session.userInfo.userID).then(function (listenedSubjects) {
-                res.locals.userInfo = req.session.userInfo;
-                console.log(postLists);
+        query.postSubjectList2(list).then(function (postList) {
+            console.log(postList);
+            if (req.session.userInfo != undefined) {
+                mongoQuery.subjectLists(req.session.userInfo.userID).then(function (listenedSubjects) {
+                    res.locals.userInfo = req.session.userInfo;
+                    res.render('\subject/subject', {
+                        "subjectList": list,
+                        'results': list,
+                        'q': 'List',
+                        // 'usList': usl
+                        'usList': listenedSubjects.listened,
+                        'postLists': JSON.stringify(postList)
+                    });
+                });
+            } else {
                 res.render('\subject/subject', {
                     "subjectList": list,
                     'results': list,
                     'q': 'List',
-                    // 'usList': usl
-                    'usList': listenedSubjects.listened,
-                    'postList': postLists
+                    'usList': [],
+                    'postLists': JSON.stringify(postList)
                 });
-            });
-        } else {
-            res.render('\subject/subject', {
-                "subjectList": list,
-                'results': list,
-                'q': 'List',
-                'usList': [],
-                'postList': postLists
-            });
-        }
+            }
+        });
     });
 });
 

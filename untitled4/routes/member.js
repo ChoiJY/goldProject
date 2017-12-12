@@ -3,34 +3,33 @@ var router = express.Router();
 var db = require('../module/database');
 var session = require('express-session');
 
-router.get('/', function(req, res, next) {
-    if(req.session.userInfo == undefined)
-    res.redirect('/member/login');
+router.get('/', function (req, res, next) {
+    if (req.session.userInfo == undefined)
+        res.redirect('/member/login');
     else
         res.redirect('/mypage');
 });
 
-router.get('/login', function(req, res, next){
-    if(req.session.userInfo == undefined)
+router.get('/login', function (req, res, next) {
+    if (req.session.userInfo == undefined)
         res.render('\member/login', {'err': ''});
     else res.redirect('/mypage');
 });
 
 // login
-router.post('/login', function(req, res, next){
+router.post('/login', function (req, res, next) {
     var userID = req.body.inputID;
     var pwd = req.body.inputPwd;
 
     db.mongoLogin(userID, pwd).then(function (result) {
-        console.log('member.js 33 :'+result.userID + '  '+ result.pwd);
-        console.log('member.js 33 :'+result.studentID + '  '+ result.password);
-
-        if(result.userID == undefined || result.userID == null) {
+        console.log('member.js 33 :' + result.userID + '  ' + result.pwd);
+        console.log('member.js 33 :' + result.studentID + '  ' + result.password);
+        if (result.userID == undefined || result.userID == null) {
             res.render('\member/login', {'err': 'login failed'});
         }
-        else{
-            console.log('member40 : '+result.userID);
-            console.log('member40 : '+result.pwd);
+        else {
+            console.log('member40 : ' + result.userID);
+            console.log('member40 : ' + result.pwd);
             req.session.userInfo = result; //session에는 userID와 pwd 저장됨
             res.redirect('/mypage'); //로그인 후 메인 화면으로 이동
         }
@@ -63,11 +62,11 @@ router.post('/join', function (req, res) {
 });
 
 // logout
-router.get('/logout', function(req, res, next){
-    if(req.session.userInfo == undefined)
+router.get('/logout', function (req, res, next) {
+    if (req.session.userInfo == undefined)
         res.redirect('/member/login');
-    else{
-        req.session.destroy(function(err){
+    else {
+        req.session.destroy(function (err) {
             res.redirect('/');
         }); //로그 아웃 후 메인 화면으로 이동
     }

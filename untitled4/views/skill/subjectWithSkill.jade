@@ -5,16 +5,21 @@ block scripts
     script(src = '/javascripts/dagre.min.js')
     script(src = '/javascripts/cytoscape-dagre.js')
 block cytoscape
+    div(id='graph')
     script.
-        window.onload = function(){
+        (function () {
+            var width = $('#graph').width($('#left').innerWidth());
+            var height = $('#graph').height($('#left').innerHeight());
             $('#select').val('#{selectedSkill}').attr('selected', 'selected');
             var cy = cytoscape({
-                container: $('#left'),
+                container: $('#graph'),
                 elements: [{
-                    data: {id: '#{selectedSkill}',
+                    data: {
+                        id: '#{selectedSkill}',
                         faveShape: 'rectangle',
                         faveColor: '#3366FF',
-                        href: '/skill/job/' + '#{selectedSkill}', name: '#{selectedSkill}'.replace(/\_/g, " ")}
+                        href: '/skill/job/' + '#{selectedSkill}', name: '#{selectedSkill}'.replace(/\_/g, " ")
+                    }
                 }],
                 style: [
                     {
@@ -26,8 +31,8 @@ block cytoscape
                             'text-outline-width': 2,
                             'text-outline-color': 'data(faveColor)',
                             color: 'white',
-                            width: '100',
-                            height: '100',
+                            width: 100,
+                            height: 100,
                             'background-fit': 'cover',
                             'background-color': 'data(faveColor)'
                         }
@@ -47,13 +52,28 @@ block cytoscape
             });
             var l = '#{results}'.split(',');
             var usl = '#{usList}'.split(',');
-            for(var i in l){
-                if(usl.indexOf(l[i])<0) {
+            for (var i in l) {
+                if (usl.indexOf(l[i]) < 0) {
                     cy.add([
-                        {data: {id: l[i], faveShape: 'ellipse', faveColor: '#FF6600', href: '/subject/skill/'+l[i], name: l[i].replace(/\_/g, " ")}},
-                        {data: {id: l[i] + '#{selectedSkill}', source: l[i], target: "#{selectedSkill}", faveColor: '#FF6600'}}
+                        {
+                            data: {
+                                id: l[i],
+                                faveShape: 'ellipse',
+                                faveColor: '#FF6600',
+                                href: '/subject/skill/' + l[i],
+                                name: l[i].replace(/\_/g, " ")
+                            }
+                        },
+                        {
+                            data: {
+                                id: l[i] + '#{selectedSkill}',
+                                source: l[i],
+                                target: "#{selectedSkill}",
+                                faveColor: '#FF6600'
+                            }
+                        }
                     ]);
-                }else{
+                } else {
                     cy.add([
                         {
                             data: {
@@ -76,7 +96,8 @@ block cytoscape
                 }
             }
             cy.layout({
-                name: 'concentric'
+                name: 'dagre',
+                minlen: 2
             });
             cy.on('tap', 'node', function () {
                 try {
@@ -93,5 +114,6 @@ block cytoscape
                     console.log(e);
                 }
             });
-        };
+        })();
+
 

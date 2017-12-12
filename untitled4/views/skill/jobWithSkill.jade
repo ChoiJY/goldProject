@@ -28,8 +28,8 @@ block cytoscape
                             'text-outline-width': 2,
                             'text-outline-color': 'data(faveColor)',
                             color: 'white',
-                            width: 'data(cost)',
-                            height: 'data(cost)',
+                            width: 100,
+                            height: 100,
                             'background-fit': 'cover',
                             'background-color': 'data(faveColor)'
                         }
@@ -40,6 +40,7 @@ block cytoscape
                             'target-arrow-shape': 'triangle',
                             'width': 10,
                             'curve-style': 'bezier',
+                            'distance' : 1,
                             'line-color': 'data(faveColor)',
                             'source-arrow-color': 'data(faveColor)',
                             'target-arrow-color': 'data(faveColor)'
@@ -52,13 +53,14 @@ block cytoscape
             for(var i in l){
                 if(l[i] != '#{selectedSkill}') {
                     cy.add([
-                        {data: {id: l[i], faveShape: 'pentagon', faveColor: '#FF6600', href: '/job/company/'+l[i], cost: cl[i]*400, name: l[i].replace(/\_/g, " ")}},
+                        {data: {id: l[i], faveShape: 'pentagon', faveColor: '#FF6600', href: '/job/company/'+l[i], cost: cl[i]*100, name: l[i].replace(/\_/g, " ")}},
                         {data: {id: l[i] + '#{selectedSkill}', target: l[i], source: "#{selectedSkill}", faveColor:'#3366FF'}}
                     ]);
                 }
             }
             cy.layout({
-                name: 'concentric'
+                name: 'dagre',
+                minlen: 2
             });
             cy.on('tap', 'node', function () {
                 try {

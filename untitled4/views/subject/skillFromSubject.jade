@@ -5,11 +5,14 @@ block scripts
     script(src = '/javascripts/dagre.min.js')
     script(src = '/javascripts/cytoscape-dagre.js')
 block cytoscape
+    div(class='graph')
     script.
         window.onload = function(){
+            var width = $('.graph').width($('#left').innerWidth());
+            var height = $('.graph').height($('#left').innerHeight());
             $('#select').val('#{selectedSubject}').attr('selected', 'selected');
             var cy = cytoscape({
-                container: $('#left'),
+                container: $('.graph'),
                 elements: [{
                     data: {id: '#{selectedSubject}',
                         faveShape: 'ellipse', faveColor: '#3366FF', href: '/subject/preSubject/'+'#{selectedSubject}', name: '#{selectedSubject}'.replace(/\_/g, " ")}
@@ -52,7 +55,7 @@ block cytoscape
             }
             cy.layout({
                 name: 'dagre',
-                minLen: 8
+                minLen: 3
             });
             cy.on('tap', 'node', function () {
                 try {

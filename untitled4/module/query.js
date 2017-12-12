@@ -4,7 +4,11 @@
 var SparqlClient = require('./client');
 var Promise = require('bluebird');
 var Calc = require('./calcCost');
-var endpoint = 'http://localhost:3030/ds/query';
+
+var serverURI = 'http://localhost:3030';
+var etc = '/ds/query';
+var endpoint = serverURI + etc;
+
 var prefix = "PREFIX gold: <http://nise3548.pe.hu/GOLD#>"
     + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
     + "PREFIX owl: <http://www.w3.org/2002/07/owl#>"
@@ -145,9 +149,44 @@ exports.postSubjectList = function (subjectClass) {
                 var b = a.replace(/http\:\/\/nise3548.pe.hu\/GOLD\#/g, '');
                 list[i] = b;
             }
-            list.unshift(subjectClass);
+            // list.unshift(subjectClass);
             resolve(list);
         });
+    });
+};//success
+
+exports.postSubjectList2 = function (entireList) {
+
+    return new Promise(function (resolve) {
+        var Results = [];
+        for (var i = 0; i < entireList.length; i++) {
+            console.log(entireList[i]);
+            var list = [];
+            var query = prefix +
+                "SELECT * " +
+                "WHERE " +
+                "{ gold:" + entireList[i] + " gold:isPrerequisiteOf ?Lecture.}";
+            var client = new SparqlClient(endpoint);
+            sendTo(entireList[i]);
+
+            // 기존 query가 async이기때문에 loop 내에서 현재 index data access 불가,
+            // 이를 해결하기 위해서 callback 내에 param으로 과목 이름을 보내서 access.
+            function sendTo(name) {
+                client.query(query, function (err, results) {
+                    list = results.results.bindings;
+                    for (var i = 0; i < list.length; i++) {
+                        var a = list[i].Lecture.value;
+                        var b = a.replace(/http\:\/\/nise3548.pe.hu\/GOLD\#/g, '');
+                        list[i] = b;
+                    }
+                    list.unshift(name);
+                    Results.push(list);
+                    if (Results.length == entireList.length) {
+                        resolve(Results);
+                    }
+                });
+            }
+        }
     });
 };//success
 
@@ -678,17 +717,17 @@ exports.student_subjectList = function student_subjectList(stuName) {
                     essential: d.replace(/http\:\/\/nise3548.pe.hu\/GOLD\#/g, ''),
                     major: f.replace(/http\:\/\/nise3548.pe.hu\/GOLD\#/g, '')
                 };
-                if(f=='O'){
+                if (f == 'O') {
                     majorList.push(list2[i]);
-                }else{
+                } else {
                     culList.push(list2[i]);
                 }
             }
             //list2.sort(function(a, b){
             //return a.recommendGrade - b.recommendGrade;
             //});
-            console.log('688'+majorList);
-            resolve({list2 : list2, majorList : majorList, culList : culList});
+            console.log('688' + majorList);
+            resolve({list2: list2, majorList: majorList, culList: culList});
         });
     });
 };

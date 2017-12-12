@@ -5,6 +5,12 @@ extends ../layout
 block content
     div(id = 'page-wrapper')
         div(id='right')
+            script.
+                $(document).ready(function () {
+                    var leftSize = $('#left').innerHeight() + 'px'
+                    console.log(leftSize)
+                    $('#right').css('min-height', leftSize);
+                })
             h2 Company Menu
             h3 #{q}
             br

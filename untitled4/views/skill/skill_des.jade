@@ -2,6 +2,12 @@ extends ../layout
 block content
     div(id = 'page-wrapper')
         div(id='right')
+            script.
+                $(document).ready(function () {
+                    var leftSize = $('#left').innerHeight() + 'px'
+                    console.log(leftSize)
+                    $('#right').css('min-height', leftSize);
+                })
             h2 Skill Menu
             h3 #{q}
             br
@@ -17,11 +23,11 @@ block content
                 span(class= 'glyphicon glyphicon-question-sign test', data-toggle="tooltip", data-placement="bottom", title="선택한 역량을 통해 지원 가능한 직무를 보여줍니다")
                 button(type='button', class='btn btn-primary btn-lg btn-block', onclick='bt2Click();') 이 역량을 통해 지원할 수 있는 직무는?
             script.
-                function bt1Click(){
+                function bt1Click() {
                     var selectedSkill = $('#select').val();
-                    location.href = '/skill/subject/'+selectedSkill;
+                    location.href = '/skill/subject/' + selectedSkill;
                 }
-                function bt2Click(){
+                function bt2Click() {
                     var selectedSkill = $('#select').val();
                     location.href = '/skill/job/' + selectedSkill;
                 }

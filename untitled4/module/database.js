@@ -30,6 +30,7 @@ exports.mongoLogin = function (id, pwd) {
                 // console.log(id, pwd)
                 // console.log(results);
                 console.log('일치하는 사용자가 없음');
+                res({});
             }
         });
     });
