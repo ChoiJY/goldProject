@@ -9,7 +9,7 @@
     "bluebird": "^3.4.6",
     "body-parser": "~1.15.1",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.2.0",
+    "debug": "~2.6.9",
     "express": "~4.13.4",
     "express-dynamic-helpers-patch": "0.0.2",
     "express-session": "^1.14.2",
